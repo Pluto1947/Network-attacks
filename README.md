@@ -14,20 +14,17 @@ Firewall rules was applied using Nftables in the topology. Identifying the hosts
 
 Before starting the cli, make sure the nft rules in the firewall folder is present at the /home/mininet directory, as this is the path in my updated topo.py to apply the rules during startup.
 
-### Start the mininet CLI
-
 ```bash
+### Start the mininet CLI
 sudo -E python3 ~/LINFO2347/topo.py
 
 ### Ping all to confirm
-
 sudo -E python3 ~/LINFO2347/topo.py -p
 
 ### Note: Remember to clean the environment, when you exit the cli before rerun.
-
 sudo mn -c
+```
 
 ## ARP Cache Poisoning - Attack
 
 This attack was quite interesting the
-```
