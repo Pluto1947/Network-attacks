@@ -1,0 +1,40 @@
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+
+table inet filter {
+	chain input {
+		type filter hook input priority 0; policy drop;
+
+		# Allow established/related connections
+		ct state established,related accept
+
+		# Allow all loopback traffic
+		iifname lo accept
+
+		# Accept ICMP
+		ip protocol icmp accept
+	
+	}
+
+	chain output {
+		type filter hook output priority 0; policy drop;
+
+		# Allow established/related connections
+		ct state established,related accept
+
+		# Allow all loopback traffic
+		oifname lo accept
+
+		# Allow new connections only to dmz servers
+		ip daddr { 10.12.0.20, 10.12.0.30, 10.12.0.40, 10.12.0.10 } ct state new accept
+
+		# Allow ICMP only to DMZ servers
+		ip daddr { 10.12.0.20, 10.12.0.30, 10.12.0.40, 10.12.0.10 } ip protocol icmp accept
+	}
+
+	chain forward {
+		type filter hook forward priority 0; policy drop;
+	}
+}

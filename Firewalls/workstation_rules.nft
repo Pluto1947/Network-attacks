@@ -1,0 +1,30 @@
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table inet filter {
+	chain input {
+		type filter hook input priority 0; policy drop;
+
+		# Allow established/related connections
+		ct state established,related accept
+
+		# Allow all loopback traffic
+		iifname lo accept
+
+		# Accept ICMP/ICMPv6
+		ip protocol icmp accept
+		ip6 nexthdr ipv6-icmp accept
+	}
+
+	chain output {
+		type filter hook output priority 0; policy accept;
+
+		# Workstations can initiate connections to anywhere
+		# Default accept policy handles this
+	}
+
+	chain forward {
+		type filter hook forward priority 0; policy drop;
+	}
+}
