@@ -1,0 +1,41 @@
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table inet filter {
+    set port_scanners {
+        type ipv4_addr
+        flags timeout
+        timeout 60s
+    }
+    
+    chain input {
+        type filter hook input priority 0; policy drop;
+        
+        # Allow established/related connections
+        ct state established,related accept
+        
+        # Allow loopback
+        iif "lo" accept
+        
+        # Allow ICMP (ping)
+        ip protocol icmp accept
+        
+        # SYN Flood Protection
+        tcp flags syn limit rate 5/second burst 10 packets drop
+        tcp flags syn ct state new limit rate 10/minute burst 5 packets accept
+        
+        # Detect and block port scanners
+        tcp flags syn ct state new \
+            add @port_scanners { ip saddr timeout 60s } \
+            limit rate 5/minute burst 10 packets accept
+        
+        ip saddr @port_scanners drop
+        
+        # Drop invalid packets
+        ct state invalid drop
+        
+        # Allow specific services (example: SSH, HTTP, HTTPS)
+        tcp dport { 22, 80, 443 } ct state new accept
+    }
+}
