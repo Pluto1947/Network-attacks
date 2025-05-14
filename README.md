@@ -16,6 +16,7 @@ Before starting the cli, make sure the nft rules in the firewall folder is prese
 
 ### Start the mininet CLI
 
+```bash
 sudo -E python3 ~/LINFO2347/topo.py
 
 ### Ping all to confirm
@@ -29,3 +30,4 @@ sudo mn -c
 ## ARP Cache Poisoning - Attack
 
 This attack was quite interesting the
+```
