@@ -19,7 +19,7 @@ if ! command -v ping &> /dev/null; then
 fi
 
 # Determine the interface (assuming the first non-loopback interface)
-INTERFACE=$(ip link | grep -v "lo:" | grep -oP '^[0-9]+: \K[^:]+' | head -n 1)
+INTERFACE=$(ip link | grep -v "lo:" | grep -oP '^[0-9]+: \K[^:@]+' | head -n 1)
 if [ -z "$INTERFACE" ]; then
     echo "[!] No network interface found."
     exit 1

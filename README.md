@@ -61,7 +61,7 @@ The mitigation works as follows:
 ### you need to make the mitigation bash script executable with
 sudo chown +x arp_mitigation.sh
 
-### inside of the mininet cli, you will have to apply the mitigation on the host which has been affected in the subnet. Edit the path to the script.
+### inside of the mininet cli, you will have to apply the mitigation on the victim host which was affected in the subnet. Edit the path to the script.
 victim arp_mitigation.sh &
 
 ### rerun the attack and generate traffic to confirm the mitigation worked.
@@ -84,7 +84,7 @@ The attack works as follows:
 ```bash
 ### NOTE: set the respective paths to the files on your system
 ### Make sure the script is executable
-sudo chmod +X mac_flood.py
+sudo chmod +x mac_flood.py
 
 ### From your the mininet cli
 host python3 ~/project/mac_flood_scapy.py interface sourceIP duration &
@@ -102,10 +102,10 @@ The mitigation works as follows:
 ```bash
 ### NOTE: set the respective paths to the files on your system
 ### Make sure the script is executable
-sudo chmod +X mac_mitigation.sh
+sudo chmod +x mac_mitigation.sh
 
 ### From the mininet cli
-host sh bash mac_mitigation.sh
+host bash mac_mitigation.sh
 
 ### rerun the attack and generate traffic to confirm the mitigation worked.
 victim ping -c 30 server_IP
@@ -133,13 +133,26 @@ ws2 python3 syn_flood.py
 
 ## Mitigations
 
+NFTable rules is applied on the victim host
+This script mitigates SYN floods and limits HTTP connections while allowing legitimate traffic and logging attacks.
+
+```bash
+### NOTE: set the respective paths to the files on your system
+### Make sure the script is executable
+sudo chmod +x flood_protect.sh
+
+### From the mininet cli
+host flood_protect.sh
+
+```
+
 ## - DHCP_starve_spoof -
 
 ### Attack
 
 DHCP is a Network Protocol used to Automatically assign IP Information
-This attacks aims to flood the dhcp server with bogus dhcp requests and leases all of the available IP addresses.
-This can result in a DoS attack but a little bit of twist was added, which is after starving th server, we then add a rogue DHCP server which will replace the legitamate one and issue out IP addresses to clients.
+This attacks aims to flood the DHCP server with bogus DHCP requests and leases all of the available IP addresses.
+This can result in a DoS attack but a little bit of twist was added, which is after starving the server, we then add a rogue DHCP server which will replace the legitamate one and issue out IP addresses to clients.
 Although the topology doesn't have an active DHCP server but the motive stands if there is a legitimate DHCP server present in the topology.
 This creates a “man-in-the-middle” attack and can go entirely undetected as the intruder intercepts the data flow through the network.
 The attack works as follow:
@@ -147,10 +160,10 @@ The attack works as follow:
 ```bash
 ### NOTE: set the respective paths to the files on your system
 ### Make sure the script is executable
-sudo chmod +X dhcp_starve_spoof.py
+sudo chmod +x dhcp_starve_spoof.py
 
 ### From your the mininet cli
-host python3 dhcp_attack.py -i interface &
+host python3 dhcp_starve_spoof.py -i interface &
 
 ### On the victim hosts in the subnet we release and renew DHCP to confirm the attack.
 host dhclient -r interface
@@ -170,13 +183,13 @@ The mitigation works as follows:
 ```bash
 ### NOTE: set the respective paths to the files on your system
 ### Make sure the script is executable
-sudo chmod +X mac_mitigation.sh
+sudo chmod +x dhcp_mitigate.sh
 
-### From the mininet cli
-host sh bash mac_mitigation.sh
+### From the mininet cli, R1 should be the host preferablly based on the topography.
+host dhcp_mitigate.sh
 
-### rerun the attack and generate traffic to confirm the mitigation worked.
-victim ping -c 30 server_IP
+### check the IP details of the victim hosts
+host ip a
 
 ```
 
@@ -197,7 +210,7 @@ The attacker sends TCP SYN packets to various ports on the target.
 ```bash
 ### NOTE: set the respective paths to the files on your system
 ### Make sure the script is executable
-sudo chmod +X tcp_syn_attack.py
+sudo chmod +x tcp_syn_attack.py
 
 ### From the mininet cli capture the traffic from the target server then launch the attack
 host tshark -i any -f "tcp port 80" -w /tmp/tcp_scan_attack.pcap &

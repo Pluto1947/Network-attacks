@@ -7,7 +7,7 @@ table inet http_filter {
         type ipv4_addr
         flags timeout
         timeout 60s  # Block offenders for 60 seconds
-    )
+    }
 
     chain input {
         type filter hook input priority 0; policy drop;
