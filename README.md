@@ -87,7 +87,7 @@ The attack works as follows:
 sudo chmod +x mac_flood.py
 
 ### From your the mininet cli
-host python3 ~/project/mac_flood_scapy.py interface sourceIP duration &
+host python3 ~/project/mac_flood.py interface source_IP duration &
 
 ### Ping the Server from one of the host in the subnet, you will notice a huge packet loss and high latency.
 victim ping -c 30 server_IP
