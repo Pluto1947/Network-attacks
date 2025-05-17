@@ -88,8 +88,8 @@ def mac_flood(iface="ws2-eth0", src_ip="10.1.0.2", cycle_duration=10):
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print("Usage: python3 mac_flood_scapy.py <interface> <source_ip> <cycle_duration>")
-        print("Example: python3 mac_flood_scapy.py ws2-eth0 10.1.0.2 10")
+        print("Usage: python3 mac_flood.py <interface> <source_ip> <cycle_duration>")
+        print("Example: python3 mac_flood.py ws2-eth0 10.1.0.2 10")
         sys.exit(1)
 
     iface = sys.argv[1]
